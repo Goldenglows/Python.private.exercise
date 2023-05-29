@@ -15,3 +15,6 @@ for i in range(k):
     p.sort(reverse=True)
 
 print(total)  
+
+
+
