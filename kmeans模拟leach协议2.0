@@ -1,0 +1,41 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+
+
+# 生成40个节点的随机数据，包括位置和能量
+np.random.seed(0)
+nodes = np.random.rand(40, 2)  # 40个节点的二维坐标
+energies = np.random.rand(40)  # 40个节点的能量值
+
+# 使用K-means算法将节点聚类成5个簇
+kmeans = KMeans(n_clusters=5, random_state=0).fit(nodes)
+clusters = kmeans.labels_
+
+# LEACH协议：选择每个簇中一个节点作为簇头节点
+cluster_heads = {}
+for cluster_id in range(5):
+    cluster_nodes = np.where(clusters == cluster_id)[0]
+    head_node = np.random.choice(cluster_nodes)
+    cluster_heads[cluster_id] = head_node
+
+# 模拟簇头节点更迭的过程
+for i in range(100):
+    # 在这里可以添加簇头节点更迭的逻辑
+    # 这里只是简单示例，每隔10步更换一次簇头节点
+    if i % 10 == 0:
+        for cluster_id in range(5):
+            cluster_nodes = np.where(clusters == cluster_id)[0]
+            head_node = np.random.choice(cluster_nodes)
+            cluster_heads[cluster_id] = head_node
+
+    # 绘制节点和簇头节点的分布图
+    plt.figure()
+    for cluster_id in range(5):
+        cluster_nodes = np.where(clusters == cluster_id)[0]
+        plt.scatter(nodes[cluster_nodes, 0], nodes[cluster_nodes, 1], label=f'Cluster {cluster_id}')
+        plt.scatter(nodes[cluster_heads[cluster_id], 0], nodes[cluster_heads[cluster_id], 1], marker='x', color='red',
+                    label=f'Cluster {cluster_id} Head')
+    plt.title(f'Iteration {i}')
+    plt.legend()
+    plt.show()
